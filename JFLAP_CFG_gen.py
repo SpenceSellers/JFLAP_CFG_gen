@@ -23,7 +23,11 @@ class CFG(object):
         ''' Parses a single statement from a string. '''
         if epsilon == None: epsilon = "~"
         if separator == None: separator = "->"
-        (variable, rules) = string.split(separator)
+        try:
+            (variable, rules) = string.split(separator)
+        except ValueError:
+            raise ValueError("Invalid rule:" + string + ". Check transitions and separators!")
+            
         variable = variable.strip()
         rules = rules.split("|")
         rules = map(lambda s: s.strip(), rules)
@@ -42,14 +46,17 @@ def main():
     args = parser.parse_args()
 
     linesep = args.s if args.s else ";"
-    
+
     g = CFG()
     for r in args.cfg.split(linesep):
-        g.parse_rule(r, epsilon=args.e, separator=args.s)
-    
+        g.parse_rule(r, epsilon=args.e, separator=args.t)
+
     out = g.JFLAP_export()
     if args.o:
-        f = open(args.o, "w")
+        try:
+            f = open(args.o, "w")
+        except IOError:
+            raise IOError("Unable to open the output file: " + args.o)
         f.write(out)
         f.close()
     else:

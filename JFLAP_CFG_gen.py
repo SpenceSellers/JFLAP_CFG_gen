@@ -21,8 +21,8 @@ class CFG(object):
 
     def parse_rule(self, string, epsilon=None, separator=None):
         ''' Parses a single statement from a string. '''
-        if epsilon == None: epsilon = "~"
-        if separator == None: separator = "->"
+        if epsilon == None: raise ValueError("No epsilon specified!")
+        if separator == None: separator = ValueError("No separator specified!")
         try:
             (variable, rules) = string.split(separator)
         except ValueError:
@@ -38,10 +38,10 @@ class CFG(object):
         
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("cfg", type=str, help="The CFG to be converted.")
-    parser.add_argument("-e", type=str, help="Epsilon designator")
-    parser.add_argument("-t", type=str, help="Transition Separator")
-    parser.add_argument("-s", type=str, help="The line/rule separator.")
+    parser.add_argument("cfg", type=str, help="The CFG to be converted. Example: 'S -> aSb | ~")
+    parser.add_argument("-e", default="~", type=str, help="Epsilon designator. Default: %(default)s")
+    parser.add_argument("-t", default="->", type=str, help="Transition Separator. Default: %(default)s")
+    parser.add_argument("-s", default=";", type=str, help="The line/rule separator. Default: %(default)s")
     parser.add_argument("-o", type=str, help="Output file")
     args = parser.parse_args()
 
